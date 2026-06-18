@@ -12,16 +12,7 @@
     <section class="preamble">
       <h1>Hello & Welcome</h1>
       <p>Welcome to your rowing badge book! This website has everything you need to help you understand the badges you can achieve as a rower.</p>
-      <!-- <div class="user-info">
-        <div>
-          <label for="rower-name">My name is: </label>
-          <input type="text" id="rower-name" placeholder="Type name...">
-        </div>
-        <div>
-          <label for="rower-club">My club is: </label>
-          <input type="text" id="rower-club" placeholder="Type club...">
-        </div>
-      </div> -->
+    
     </section>
 
     <div id="portfolio-container">
@@ -29,26 +20,30 @@
     </div>
 
     <section class="postamble">
-      <h2>The Creative Crew</h2>
+      <h2 class="postamble-title">The Creative Crew</h2>
+      
+      <div class="lead-author">
+        <h3># The Taskmaster</h3>
+        <p>Who would I be without taking every opportunity to ruthlessly mock you? So proud you've found a new hobby and social group. Yeah, this is waaaaay over and above what I do for birthdays usually, but you know this has been brewing for a while and I'm going to use my creativity for my ride-and-die cheerleader for good. This time.</p>
+      </div>
+
+      <div class="contributors-section-title">Co-Authors & Accomplices</div>
+      
       <div class="credits-grid">
         <div class="credit-block">
-          <h2>The Taskmaster</h2>
-          <p>Who would I be without taking every opportunity to ruthlessly mock you? So proud you've found a new hobby and social group. Yeah, this is waaaaay over and above what I do for birthdays usually, but you know this has been brewing for a while and I'm going to use my creativity for my ride-and-die cheerleader for good. This time.</p>
-        </div>
-        <div class="credit-block">
-          <h3>Anna</h3>
+          <h4># Anna</h4>
           <p>Because I love to make other people do my homework and I would be up the creek without my ...</p>
         </div>
         <div class="credit-block">
-          <h2>Little Alex Hornes</h2>
+          <h4># Little Alex Hornes</h4>
           <p>I'm a sick bastard who makes people contribute to their own birthday presents.</p>
         </div>
         <div class="credit-block">
-          <h3>Ashley</h3>
+          <h4># Ashley</h4>
           <p>She's been friend-jacked and you're not getting her back.</p>
         </div>
         <div class="credit-block">
-          <h3>Felix</h3>
+          <h4># Felix</h4>
           <p>Friend-jacking WIP.</p>
         </div>
       </div>
@@ -64,32 +59,51 @@
         const json = JSON.parse(text.substr(47).slice(0, -2));
         const rows = json.table.rows;
         
-        const badges = rows.slice(1).map(r => ({
-          section: r.c[0] ? r.c[0].v : 'Other',
-          title: r.c[1] ? r.c[1].v : 'Untitled Badge',
-          description: r.c[2] ? r.c[2].v : '',
-          flag: r.c[3] ? r.c[3].v : '',
-          image: r.c[4] ? `images/${r.c[4].v}` : 'https://via.placeholder.com/110?text=Badge'
-        }));
+        // Setup empty storage structures
+        const sectionDescriptions = {};
+        const badgeGroups = {};
 
-        const groups = {};
-        badges.forEach(badge => {
-          if (!groups[badge.section]) groups[badge.section] = [];
-          groups[badge.section].push(badge);
+        // Loop over spreadsheet entries, skipping headers
+        rows.slice(1).forEach(r => {
+          const section = r.c[0] ? r.c[0].v : 'Other';
+          const title = r.c[1] ? r.c[1].v : 'Untitled';
+          const description = r.c[2] ? r.c[2].v : '';
+          const flag = r.c[3] ? r.c[3].v : '';
+          const image = r.c[4] ? r.c[4].v : 'https://via.placeholder.com/110?text=Badge';
+
+          // Extract row out as section description if it matches the keyword
+          if (title === 'SECTION_DESCRIPTION') {
+            sectionDescriptions[section] = description;
+          } else {
+            if (!badgeGroups[section]) badgeGroups[section] = [];
+            badgeGroups[section].push({ title, description, flag, image });
+          }
         });
 
         const container = document.getElementById('portfolio-container');
         container.innerHTML = ''; 
 
-        for (const section in groups) {
+        // Generate matching sections
+        for (const section in badgeGroups) {
+          // 1. Add Category Header
           const heading = document.createElement('h2');
           heading.textContent = section;
           container.appendChild(heading);
 
+          // 2. Add Section Blurb Description if present
+          if (sectionDescriptions[section]) {
+            const blurb = document.createElement('p');
+            blurb.className = 'section-blurb';
+            blurb.textContent = sectionDescriptions[section];
+            container.appendChild(blurb);
+          }
+
+          // 3. Add Badges Grid Container
           const grid = document.createElement('div');
           grid.className = 'grid';
 
-          groups[section].forEach(badge => {
+          // Populating Cards
+          badgeGroups[section].forEach(badge => {
             const card = document.createElement('div');
             card.className = 'card';
             
@@ -110,7 +124,7 @@
         }
       })
       .catch(err => {
-        document.getElementById('portfolio-container').innerHTML = '<div id="loading" style="color:#991b1b;">Error loading badges. Check your Sheet general access configuration.</div>';
+        document.getElementById('portfolio-container').innerHTML = '<div id="loading" style="color:#991b1b;">Error loading badges. Check configuration sharing.</div>';
         console.error(err);
       });
   </script>
