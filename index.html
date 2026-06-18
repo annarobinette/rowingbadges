@@ -4,151 +4,55 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rowing Badge Book</title>
-  <style>
-    :root {
-      --bg-color: #d1e7ed; /* Matches the soft blue canvas in Screenshot 2026-06-17 171817.png */
-      --card-bg: #ffffff;
-      --text-main: #333333;
-      --text-muted: #555555;
-      --rare-color: #ff4a3b; /* Vibrant red patch for flags */
-    }
-
-    body { 
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-      background-color: var(--bg-color); 
-      margin: 0; 
-      padding: 40px 20px;
-      color: var(--text-main);
-    }
-
-    .wrapper {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    header {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    header h1 {
-      font-size: 2.2rem;
-      color: #1e3a8a;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-      letter-spacing: -0.01em;
-    }
-
-    header p {
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      margin: 0;
-    }
-
-    h2 { 
-      color: #1e3a8a; 
-      border-bottom: 3px solid rgba(30, 58, 138, 0.15); 
-      padding-bottom: 8px; 
-      margin-top: 50px; 
-      margin-bottom: 24px; 
-      font-size: 1.7rem; 
-      font-weight: 800;
-      letter-spacing: -0.02em; 
-      text-transform: uppercase;
-    }
-    
-    h2:first-of-type { margin-top: 10px; }
-
-    .grid { 
-      display: grid; 
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
-      gap: 30px; 
-      margin-bottom: 40px; 
-    }
-
-    .card { 
-      background: var(--card-bg); 
-      border-radius: 16px; 
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-      padding: 28px 20px; 
-      text-align: center; 
-      display: flex; 
-      flex-direction: column; 
-      justify-content: flex-start; 
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .card:hover { 
-      transform: translateY(-5px); 
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    }
-
-    .img-container {
-      position: relative;
-      width: 110px;
-      height: 110px;
-      margin: 0 auto 18px auto;
-    }
-
-    .card img { 
-      width: 110px; 
-      height: 110px; 
-      object-fit: contain; 
-      display: block; 
-      border-radius: 50%; 
-      background: #ffffff; 
-    }
-
-    .flag-pill {
-      position: absolute;
-      top: 2px;
-      right: -8px;
-      background: var(--rare-color);
-      color: #ffffff;
-      font-size: 0.68rem;
-      font-weight: 800;
-      padding: 3px 7px;
-      border-radius: 4px; /* Slightly squared patch style */
-      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-      letter-spacing: 0.03em;
-      transform: rotate(2deg);
-    }
-
-    .title { 
-      font-weight: 700; 
-      font-size: 1.15rem; 
-      margin: 0 0 10px 0; 
-      color: #2c3e50; 
-      line-height: 1.3; 
-    }
-
-    .desc { 
-      font-size: 0.9rem; 
-      color: var(--text-muted); 
-      line-height: 1.5; 
-      margin: 0; 
-    }
-
-    #loading { 
-      text-align: center; 
-      padding: 80px 0; 
-      color: var(--text-muted); 
-      font-size: 1.2rem; 
-      font-weight: 500;
-    }
-  </style>
+  <link rel="stylesheet" href="mainstyle.css">
 </head>
 <body>
 
   <div class="wrapper">
-    <header>
-      <h1>My Rowing Badge Book</h1>
-      <p>Track your achievements on and off the water</p>
-    </header>
+    <section class="preamble">
+      <h1>Hello & Welcome</h1>
+      <p>Welcome to your rowing badge book! This website has everything you need to help you understand the badges you can achieve as a rower.</p>
+      <div class="user-info">
+        <div>
+          <label for="rower-name">My name is: </label>
+          <input type="text" id="rower-name" placeholder="Type name...">
+        </div>
+        <div>
+          <label for="rower-club">My club is: </label>
+          <input type="text" id="rower-club" placeholder="Type club...">
+        </div>
+      </div>
+    </section>
 
     <div id="portfolio-container">
       <div id="loading">Loading Badge Portfolio...</div>
     </div>
+
+    <section class="postamble">
+      <h2>The Creative Crew</h2>
+      <div class="credits-grid">
+        <div class="credit-block">
+          <h3># The Taskmaster</h3>
+          <p>Who would I be without taking every opportunity to ruthlessly mock you? So proud you've found a new hobby and social group. Yeah, this is waaaaay over and above what I do for birthdays usually, but you know this has been brewing for a while and I'm going to use my creativity for my ride-and-die cheerleader for good. This time.</p>
+        </div>
+        <div class="credit-block">
+          <h3># Anna</h3>
+          <p>Because I love to make other people do my homework and I would be up the creek without my ...</p>
+        </div>
+        <div class="credit-block">
+          <h3># Little Alex Hornes</h3>
+          <p>I'm a sick bastard who makes people contribute to their own birthday presents.</p>
+        </div>
+        <div class="credit-block">
+          <h3># Ashley</h3>
+          <p>She's been friend-jacked and you're not getting her back.</p>
+        </div>
+        <div class="credit-block">
+          <h3># Felix</h3>
+          <p>Friend-jacking WIP.</p>
+        </div>
+      </div>
+    </section>
   </div>
 
   <script>
@@ -160,7 +64,6 @@
         const json = JSON.parse(text.substr(47).slice(0, -2));
         const rows = json.table.rows;
         
-        // Maps data, safely slicing out the first row (headers)
         const badges = rows.slice(1).map(r => ({
           section: r.c[0] ? r.c[0].v : 'Other',
           title: r.c[1] ? r.c[1].v : 'Untitled Badge',
