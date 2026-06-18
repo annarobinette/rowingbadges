@@ -69,7 +69,7 @@
           title: r.c[1] ? r.c[1].v : 'Untitled Badge',
           description: r.c[2] ? r.c[2].v : '',
           flag: r.c[3] ? r.c[3].v : '',
-          image: r.c[4] ? r.c[4].v : 'https://via.placeholder.com/110?text=Badge'
+          image: r.c[4] ? `images/${r.c[4].v}` : 'https://via.placeholder.com/110?text=Badge'
         }));
 
         const groups = {};
