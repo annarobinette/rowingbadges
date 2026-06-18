@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rowing Badge Book</title>
+  <style>
+    :root {
+      --bg-color: #d1e7ed; /* Matches the soft blue canvas in Screenshot 2026-06-17 171817.png */
+      --card-bg: #ffffff;
+      --text-main: #333333;
+      --text-muted: #555555;
+      --rare-color: #ff4a3b; /* Vibrant red patch for flags */
+    }
+
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+      background-color: var(--bg-color); 
+      margin: 0; 
+      padding: 40px 20px;
+      color: var(--text-main);
+    }
+
+    .wrapper {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    header h1 {
+      font-size: 2.2rem;
+      color: #1e3a8a;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+    }
+
+    header p {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      margin: 0;
+    }
+
+    h2 { 
+      color: #1e3a8a; 
+      border-bottom: 3px solid rgba(30, 58, 138, 0.15); 
+      padding-bottom: 8px; 
+      margin-top: 50px; 
+      margin-bottom: 24px; 
+      font-size: 1.7rem; 
+      font-weight: 800;
+      letter-spacing: -0.02em; 
+      text-transform: uppercase;
+    }
+    
+    h2:first-of-type { margin-top: 10px; }
+
+    .grid { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
+      gap: 30px; 
+      margin-bottom: 40px; 
+    }
+
+    .card { 
+      background: var(--card-bg); 
+      border-radius: 16px; 
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      padding: 28px 20px; 
+      text-align: center; 
+      display: flex; 
+      flex-direction: column; 
+      justify-content: flex-start; 
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .card:hover { 
+      transform: translateY(-5px); 
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    .img-container {
+      position: relative;
+      width: 110px;
+      height: 110px;
+      margin: 0 auto 18px auto;
+    }
+
+    .card img { 
+      width: 110px; 
+      height: 110px; 
+      object-fit: contain; 
+      display: block; 
+      border-radius: 50%; 
+      background: #ffffff; 
+    }
+
+    .flag-pill {
+      position: absolute;
+      top: 2px;
+      right: -8px;
+      background: var(--rare-color);
+      color: #ffffff;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 3px 7px;
+      border-radius: 4px; /* Slightly squared patch style */
+      box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+      letter-spacing: 0.03em;
+      transform: rotate(2deg);
+    }
+
+    .title { 
+      font-weight: 700; 
+      font-size: 1.15rem; 
+      margin: 0 0 10px 0; 
+      color: #2c3e50; 
+      line-height: 1.3; 
+    }
+
+    .desc { 
+      font-size: 0.9rem; 
+      color: var(--text-muted); 
+      line-height: 1.5; 
+      margin: 0; 
+    }
+
+    #loading { 
+      text-align: center; 
+      padding: 80px 0; 
+      color: var(--text-muted); 
+      font-size: 1.2rem; 
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <header>
+      <h1>My Rowing Badge Book</h1>
+      <p>Track your achievements on and off the water</p>
+    </header>
+
+    <div id="portfolio-container">
+      <div id="loading">Loading Badge Portfolio...</div>
+    </div>
+  </div>
+
+  <script>
+    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/18-noRoTzvpO1QRw83WhwuOA7Ba-dEgd8Kw7y3bg7mZk/gviz/tq?tqx=out:json';
+
+    fetch(SHEET_URL)
+      .then(res => res.text())
+      .then(text => {
+        const json = JSON.parse(text.substr(47).slice(0, -2));
+        const rows = json.table.rows;
+        
+        // Maps data, safely slicing out the first row (headers)
+        const badges = rows.slice(1).map(r => ({
+          section: r.c[0] ? r.c[0].v : 'Other',
+          title: r.c[1] ? r.c[1].v : 'Untitled Badge',
+          description: r.c[2] ? r.c[2].v : '',
+          flag: r.c[3] ? r.c[3].v : '',
+          image: r.c[4] ? r.c[4].v : 'https://via.placeholder.com/110?text=Badge'
+        }));
+
+        const groups = {};
+        badges.forEach(badge => {
+          if (!groups[badge.section]) groups[badge.section] = [];
+          groups[badge.section].push(badge);
+        });
+
+        const container = document.getElementById('portfolio-container');
+        container.innerHTML = ''; 
+
+        for (const section in groups) {
+          const heading = document.createElement('h2');
+          heading.textContent = section;
+          container.appendChild(heading);
+
+          const grid = document.createElement('div');
+          grid.className = 'grid';
+
+          groups[section].forEach(badge => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            
+            const flagHTML = badge.flag ? `<span class="flag-pill">${badge.flag}</span>` : '';
+
+            card.innerHTML = `
+              <div class="img-container">
+                <img src="${badge.image}" alt="${badge.title}">
+                ${flagHTML}
+              </div>
+              <div class="title">${badge.title}</div>
+              <p class="desc">${badge.description}</p>
+            `;
+            grid.appendChild(card);
+          });
+
+          container.appendChild(grid);
+        }
+      })
+      .catch(err => {
+        document.getElementById('portfolio-container').innerHTML = '<div id="loading" style="color:#991b1b;">Error loading badges. Check your Sheet general access configuration.</div>';
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
