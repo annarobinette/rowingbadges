@@ -45,7 +45,7 @@
     </section>
   </div>
 
-  <script>
+<script>
     const SHEET_URL = 'https://docs.google.com/spreadsheets/d/18-noRoTzvpO1QRw83WhwuOA7Ba-dEgd8Kw7y3bg7mZk/gviz/tq?tqx=out:json';
 
     fetch(SHEET_URL)
@@ -56,8 +56,6 @@
         
         const sectionDescriptions = {};
         const badgeGroups = {};
-
-        // Track order of sections as they appear in the spreadsheet
         const sectionOrder = [];
 
         rows.slice(1).forEach(r => {
@@ -65,7 +63,8 @@
           const title = r.c[1] ? r.c[1].v : 'Untitled';
           const description = r.c[2] ? r.c[2].v : '';
           const flag = r.c[3] ? r.c[3].v : '';
-          const image = r.c[4] ? r.c[4].v : 'https://via.placeholder.com/110?text=Badge';
+          // Safely constructs the relative repository image folder route path
+          const image = r.c[4] ? `images/${r.c[4].v}` : 'https://via.placeholder.com/110?text=Badge';
 
           if (!sectionOrder.includes(section)) {
             sectionOrder.push(section);
@@ -82,7 +81,7 @@
         const container = document.getElementById('portfolio-container');
         container.innerHTML = ''; 
 
-        // Generate elements sequentially matching the section order
+        // Generate matching structure categories
         sectionOrder.forEach(section => {
           if (!badgeGroups[section] || badgeGroups[section].length === 0) return;
 
@@ -103,19 +102,10 @@
           const grid = document.createElement('div');
           grid.className = 'grid';
 
-          // Populating Cards inside the grid
+          // Populating Cards cleanly inside the grid loop
           badgeGroups[section].forEach(badge => {
             const card = document.createElement('div');
             card.className = 'card';
-
-            const badges = rows.slice(1).map(r => ({
-            section: r.c[0] ? r.c[0].v : 'Other',
-            title: r.c[1] ? r.c[1].v : 'Untitled',
-            description: r.c[2] ? r.c[2].v : '',
-            flag: r.c[3] ? r.c[3].v : '',
-            // Appends 'images/' to whatever string text is typed into column E
-            image: r.c[4] ? `images/${r.c[4].v}` : 'https://via.placeholder.com/110?text=Badge'
-          }));
             
             const flagHTML = badge.flag ? `<span class="flag-pill">${badge.flag}</span>` : '';
 
