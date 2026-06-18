@@ -107,6 +107,15 @@
           badgeGroups[section].forEach(badge => {
             const card = document.createElement('div');
             card.className = 'card';
+
+            const badges = rows.slice(1).map(r => ({
+            section: r.c[0] ? r.c[0].v : 'Other',
+            title: r.c[1] ? r.c[1].v : 'Untitled',
+            description: r.c[2] ? r.c[2].v : '',
+            flag: r.c[3] ? r.c[3].v : '',
+            // Appends 'images/' to whatever string text is typed into column E
+            image: r.c[4] ? `images/${r.c[4].v}` : 'https://via.placeholder.com/110?text=Badge'
+          }));
             
             const flagHTML = badge.flag ? `<span class="flag-pill">${badge.flag}</span>` : '';
 
