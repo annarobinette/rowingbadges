@@ -72,7 +72,14 @@ body {
 .user-info input:focus {
   border-color: var(--brand-blue);
 }
-
+.section-blurb {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #475569; /* Soft muted text color */
+  margin-top: -5px; /* Pulls it tighter under the H2 */
+  margin-bottom: 25px; /* Leaves space before the card grid starts */
+  max-width: 800px; /* Prevents long text lines on wide screens */
+}
 /* Grid & Section Headers */
 h2 { 
   color: var(--brand-blue); 
