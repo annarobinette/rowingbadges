@@ -12,7 +12,6 @@
     <section class="preamble">
       <h1>Hello & Welcome</h1>
       <p>Welcome to your rowing badge book! This website has everything you need to help you understand the badges you can achieve as a rower.</p>
-    
     </section>
 
     <div id="portfolio-container">
@@ -59,11 +58,12 @@
         const json = JSON.parse(text.substr(47).slice(0, -2));
         const rows = json.table.rows;
         
-        // Setup empty storage structures
         const sectionDescriptions = {};
         const badgeGroups = {};
 
-        // Loop over spreadsheet entries, skipping headers
+        // Track order of sections as they appear in the spreadsheet
+        const sectionOrder = [];
+
         rows.slice(1).forEach(r => {
           const section = r.c[0] ? r.c[0].v : 'Other';
           const title = r.c[1] ? r.c[1].v : 'Untitled';
@@ -71,7 +71,10 @@
           const flag = r.c[3] ? r.c[3].v : '';
           const image = r.c[4] ? r.c[4].v : 'https://via.placeholder.com/110?text=Badge';
 
-          // Extract row out as section description if it matches the keyword
+          if (!sectionOrder.includes(section)) {
+            sectionOrder.push(section);
+          }
+
           if (title === 'SECTION_DESCRIPTION') {
             sectionDescriptions[section] = description;
           } else {
@@ -83,14 +86,16 @@
         const container = document.getElementById('portfolio-container');
         container.innerHTML = ''; 
 
-        // Generate matching sections
-        for (const section in badgeGroups) {
-          // 1. Add Category Header
+        // Generate elements sequentially matching the section order
+        sectionOrder.forEach(section => {
+          if (!badgeGroups[section] || badgeGroups[section].length === 0) return;
+
+          // 1. Add Category Header Element
           const heading = document.createElement('h2');
           heading.textContent = section;
           container.appendChild(heading);
 
-          // 2. Add Section Blurb Description if present
+          // 2. Add Section Description text directly underneath the H2
           if (sectionDescriptions[section]) {
             const blurb = document.createElement('p');
             blurb.className = 'section-blurb';
@@ -98,11 +103,11 @@
             container.appendChild(blurb);
           }
 
-          // 3. Add Badges Grid Container
+          // 3. Create Badge Grid Container
           const grid = document.createElement('div');
           grid.className = 'grid';
 
-          // Populating Cards
+          // Populating Cards inside the grid
           badgeGroups[section].forEach(badge => {
             const card = document.createElement('div');
             card.className = 'card';
@@ -121,7 +126,7 @@
           });
 
           container.appendChild(grid);
-        }
+        });
       })
       .catch(err => {
         document.getElementById('portfolio-container').innerHTML = '<div id="loading" style="color:#991b1b;">Error loading badges. Check configuration sharing.</div>';
