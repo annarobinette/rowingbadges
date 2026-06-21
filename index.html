@@ -5,15 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rowing Badge Book</title>
   <link rel="stylesheet" href="mainstyle.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 </head>
 <body>
 
   <div class="wrapper">
-    <section class="preamble">
+  <section class="preamble">
       <h1>Hello & Welcome</h1>
       <p>Welcome to your rowing badge book! This website has everything you need to help you understand the badges you can achieve as a rower.</p>
     </section>
 
+    <!-- NEW AMENDMENT: Real-time search container bar component -->
+    <div class="search-container">
+      <input type="text" id="badge-search" placeholder="🔍 Search badges or keywords...">
+    </div>
+
+    <!-- Main Dynamic Badge Content Area -->
     <div id="portfolio-container">
       <div id="loading">Loading Badge Portfolio...</div>
     </div>
@@ -45,88 +52,7 @@
     </section>
   </div>
 
-<script>
-    const SHEET_URL = 'https://docs.google.com/spreadsheets/d/18-noRoTzvpO1QRw83WhwuOA7Ba-dEgd8Kw7y3bg7mZk/gviz/tq?tqx=out:json';
 
-    fetch(SHEET_URL)
-      .then(res => res.text())
-      .then(text => {
-        const json = JSON.parse(text.substr(47).slice(0, -2));
-        const rows = json.table.rows;
-        
-        const sectionDescriptions = {};
-        const badgeGroups = {};
-        const sectionOrder = [];
-
-        rows.slice(1).forEach(r => {
-          const section = r.c[0] ? r.c[0].v : 'Other';
-          const title = r.c[1] ? r.c[1].v : 'Untitled';
-          const description = r.c[2] ? r.c[2].v : '';
-          const flag = r.c[3] ? r.c[3].v : '';
-          // Safely constructs the relative repository image folder route path
-          const image = r.c[4] ? `images/${r.c[4].v}` : 'https://via.placeholder.com/110?text=Badge';
-
-          if (!sectionOrder.includes(section)) {
-            sectionOrder.push(section);
-          }
-
-          if (title === 'SECTION_DESCRIPTION') {
-            sectionDescriptions[section] = description;
-          } else {
-            if (!badgeGroups[section]) badgeGroups[section] = [];
-            badgeGroups[section].push({ title, description, flag, image });
-          }
-        });
-
-        const container = document.getElementById('portfolio-container');
-        container.innerHTML = ''; 
-
-        // Generate matching structure categories
-        sectionOrder.forEach(section => {
-          if (!badgeGroups[section] || badgeGroups[section].length === 0) return;
-
-          // 1. Add Category Header Element
-          const heading = document.createElement('h2');
-          heading.textContent = section;
-          container.appendChild(heading);
-
-          // 2. Add Section Description text directly underneath the H2
-          if (sectionDescriptions[section]) {
-            const blurb = document.createElement('p');
-            blurb.className = 'section-blurb';
-            blurb.textContent = sectionDescriptions[section];
-            container.appendChild(blurb);
-          }
-
-          // 3. Create Badge Grid Container
-          const grid = document.createElement('div');
-          grid.className = 'grid';
-
-          // Populating Cards cleanly inside the grid loop
-          badgeGroups[section].forEach(badge => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            
-            const flagHTML = badge.flag ? `<span class="flag-pill">${badge.flag}</span>` : '';
-
-            card.innerHTML = `
-              <div class="img-container">
-                <img src="${badge.image}" alt="${badge.title}">
-                ${flagHTML}
-              </div>
-              <div class="title">${badge.title}</div>
-              <p class="desc">${badge.description}</p>
-            `;
-            grid.appendChild(card);
-          });
-
-          container.appendChild(grid);
-        });
-      })
-      .catch(err => {
-        document.getElementById('portfolio-container').innerHTML = '<div id="loading" style="color:#991b1b;">Error loading badges. Check configuration sharing.</div>';
-        console.error(err);
-      });
-  </script>
+  <script src="app.js"></script>
 </body>
 </html>
