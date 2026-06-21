@@ -69,8 +69,6 @@ body {
 .sections-overview p {
   font-size: 1.15rem;
   line-height: 1.6;
-  max-width: 700px; 
-  align: center;
   margin: 0 auto;
   color: var(--text-muted);
 }
@@ -137,10 +135,7 @@ body {
   width: 100%;
   display: flex;
   justify-content: center;
-  background: #f1f5f9;
-  border-radius: 16px;
   padding: 20px;
-  border: 1px dashed #cbd5e1;
 }
 
 .motif-image {
