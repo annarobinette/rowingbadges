@@ -73,40 +73,63 @@ body {
   color: var(--text-muted);
 }
 
-/* NEW AMENDMENT: Layout for the Category Link Grid containing {section}_section.png visual objects */
+/* ==========================================================================
+   AMENDED: BORDERLESS 3x3 SECTION NAVIGATION OVERHAUL
+   ========================================================================== */
+
+/* Strict 3-column structural layout constraint for desktop viewing windows */
 .section-nav-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(3, 1fr); /* Enforces exactly 3 items per row */
+  gap: 40px 24px; /* Generous vertical gap to accommodate names under icons */
+  max-width: 750px; /* Symmetrically groups the matrix inside the wrapper */
+  margin: 0 auto;
+  padding: 20px 0;
 }
 
+/* Stripped card skin down to clean, standalone floating badge links */
 .section-nav-card {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 16px;
+  background: none !important;     /* Eliminates the grey/white background card card skins */
+  border: none !important;         /* Eliminates all surrounding card frame edges */
+  box-shadow: none !important;     /* Eliminates layout boundary dropshadows */
+  padding: 0 !important;           /* Clear out internal bounding box spacer values */
   text-align: center;
   text-decoration: none;
-  color: var(--brand-blue);
-  font-weight: 700;
-  font-size: 0.95rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 12px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: color 0.2s ease;
 }
 
+/* Subtle textual highlighting when hovering anywhere over the text link or image */
 .section-nav-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
-  background: #ffffff;
+  color: var(--brand-blue);
 }
 
+/* Sizing parameters for the standalone {section}_section.png token files */
 .section-nav-card img {
-  width: 70px;
-  height: 70px;
+  width: 95px; /* Clean scale profile presentation */
+  height: 95px;
   object-fit: contain;
+  /* Smooth transform kinetic spring handling variables */
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Tactile 3D lift interaction rule when hovering on the borderless asset */
+.section-nav-card:hover img {
+  transform: scale(1.08) translateY(-4px);
+}
+
+/* Responsive breakpoint to automatically turn the grid fluid on mobile layouts */
+@media (max-width: 650px) {
+  .section-nav-grid {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 24px 16px;
+  }
 }
 
 /* NEW AMENDMENT: Visual design handling rules for the virtual board frame housing "motif.png" */
