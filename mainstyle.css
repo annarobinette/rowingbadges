@@ -5,11 +5,9 @@
   --text-muted: #475569;
   --brand-blue: #1e3a8a;
   --rare-color: #ff4a3b;
-  
-  /* NEW AMENDMENT: Custom theme colors for the slick "Earned It!" lifecycle tracking states */
-  --earned-bg: #fffdf5;     /* Warm ivory glow tint */
-  --earned-border: #f59e0b; /* Vibrant amber border framing ring */
-  --earned-text: #b45309;   /* High-contrast labels */
+  --earned-bg: #fffdf5;     
+  --earned-border: #f59e0b; 
+  --earned-text: #b45309;   
 }
 
 body { 
@@ -18,7 +16,6 @@ body {
   margin: 0; 
   padding: 40px 20px;
   color: var(--text-main);
-  /* NEW AMENDMENT: Anti-aliasing text optimization smoothing for modern screens */
   -webkit-font-smoothing: antialiased;
 }
 
@@ -27,36 +24,129 @@ body {
   margin: 0 auto;
 }
 
-/* AMENDED: Re-engineered preamble to elevate hierarchy into a premium header frame card */
 .preamble {
   background: var(--card-bg);
-  padding: 50px 40px; /* Enhanced internal padding for a cleaner feel */
-  border-radius: 24px; /* Slightly rounder, slicker edge profile */
-  /* Advanced multi-layered micro-shadow depth treatment */
+  padding: 50px 40px; 
+  border-radius: 24px; 
   box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.03), 0 10px 15px -3px rgba(15, 23, 42, 0.05);
-  margin-bottom: 40px;
+  margin-bottom: 30px;
   text-align: center;
 }
 
 .preamble h1 {
-  font-size: 2.6rem; /* Enhanced text presence scale */
+  font-size: 2.6rem; 
   color: var(--brand-blue);
   margin: 0 0 16px 0;
   text-transform: uppercase;
-  letter-spacing: -0.03em; /* Slightly tighter kerning look */
+  letter-spacing: -0.03em; 
 }
 
 .preamble p {
   font-size: 1.15rem;
   line-height: 1.6;
-  max-width: 700px; /* Tighter line layout bounds for effortless scanning */
+  max-width: 700px; 
   margin: 0 auto;
   color: var(--text-muted);
 }
 
-/* REMOVED: Old user-info, input, and label styles stripped completely out */
+/* NEW AMENDMENT: Layout formatting styling rules for the explanatory Overview Section Frame */
+.sections-overview {
+  background: var(--card-bg);
+  padding: 40px;
+  border-radius: 24px;
+  box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.03), 0 10px 15px -3px rgba(15, 23, 42, 0.05);
+  margin-bottom: 30px;
+}
 
-/* NEW AMENDMENT: Fluid interactive search input component layout styles */
+.sections-overview h2 {
+  margin-top: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.sections-overview p {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin-bottom: 30px;
+}
+
+/* NEW AMENDMENT: Layout for the Category Link Grid containing {section}_section.png visual objects */
+.section-nav-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 20px;
+}
+
+.section-nav-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 16px;
+  text-align: center;
+  text-decoration: none;
+  color: var(--brand-blue);
+  font-weight: 700;
+  font-size: 0.95rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.section-nav-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.05);
+  background: #ffffff;
+}
+
+.section-nav-card img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+}
+
+/* NEW AMENDMENT: Visual design handling rules for the virtual board frame housing "motif.png" */
+.motif-board-section {
+  background: var(--card-bg);
+  padding: 40px;
+  border-radius: 24px;
+  box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.03), 0 10px 15px -3px rgba(15, 23, 42, 0.05);
+  margin-bottom: 40px;
+}
+
+.motif-board-section h2 {
+  margin-top: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.motif-board-section p {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.motif-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background: #f1f5f9;
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px dashed #cbd5e1;
+}
+
+.motif-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+/* Search bar styling */
 .search-container {
   max-width: 420px;
   margin: 0 auto 40px auto;
@@ -65,13 +155,12 @@ body {
 .search-container input {
   width: 100%;
   padding: 14px 22px;
-  border-radius: 50px; /* Full pill layout architecture */
+  border-radius: 50px; 
   border: 1px solid #cbd5e1;
   font-size: 1rem;
   color: var(--text-main);
   outline: none;
   box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.02);
-  /* Smooth transform transition using standard cubic-bezier curves */
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -80,12 +169,11 @@ body {
   box-shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.08);
 }
 
-/* AMENDED: Cleaned duplicate entries down into one crisp editorial blurb style rule block */
 .section-blurb {
   font-size: 1.1rem;
   line-height: 1.6;
   color: var(--text-muted);
-  margin-top: -5px; /* Safely links closer directly below your H2 headlines */
+  margin-top: -5px; 
   margin-bottom: 30px; 
   max-width: 850px; 
 }
@@ -105,6 +193,11 @@ h2 {
 
 h2:first-of-type { margin-top: 10px; }
 
+/* AMENDED: Adjusted anchor target scroll offsets so navigating from tokens lands perfectly below the nav bar headers */
+h2[id] {
+  scroll-margin-top: 30px;
+}
+
 .grid { 
   display: grid; 
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
@@ -112,17 +205,17 @@ h2:first-of-type { margin-top: 10px; }
   margin-bottom: 40px; 
 }
 
-/* AMENDED: Integrated opacity and cubic-bezier timings to smooth the user selection transition */
 .card { 
   background: var(--card-bg); 
   border-radius: 16px; 
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   padding: 28px 20px; 
   text-align: center; 
+  text-wrap: pretty;
   display: flex; 
   flex-direction: column; 
   justify-content: flex-start; 
-  opacity: 0.85; /* Slightly muted standard state to emphasize completed items */
+  opacity: 0.85; 
   transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), 
               box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
               opacity 0.3s ease,
@@ -181,7 +274,6 @@ h2:first-of-type { margin-top: 10px; }
   margin: 0; 
 }
 
-/* NEW AMENDMENT: Visual highlight upgrades for when the checkbox status turns to true */
 .card.earned {
   opacity: 1;
   background-color: var(--earned-bg);
@@ -189,9 +281,8 @@ h2:first-of-type { margin-top: 10px; }
   box-shadow: 0 10px 15px -3px rgba(245, 158, 11, 0.05);
 }
 
-/* NEW AMENDMENT: Layout format mechanics for tracking element label text */
 .earned-label {
-  margin-top: auto; /* Locks checkbox symmetrically flat down to the bottom face of cards */
+  margin-top: auto; 
   padding-top: 20px;
   font-size: 0.82rem;
   font-weight: 600;
@@ -205,10 +296,9 @@ h2:first-of-type { margin-top: 10px; }
 }
 
 .card.earned .earned-label {
-  color: var(--earned-text); /* Updates active label text color dynamically */
+  color: var(--earned-text); 
 }
 
-/* NEW AMENDMENT: Premium overhaul of the native browser checkbox layout into custom circles */
 .badge-checker {
   appearance: none;
   width: 16px;
@@ -238,7 +328,6 @@ h2:first-of-type { margin-top: 10px; }
   border-radius: 50%;
 }
 
-/* Postamble / Hierarchical Credits Section */
 .postamble {
   background: var(--card-bg);
   padding: 40px;
@@ -257,12 +346,8 @@ h2:first-of-type { margin-top: 10px; }
   letter-spacing: -0.01em;
 }
 
-/* Top Tier: Master Lead */
 .lead-author {
-  /*background: #f8fafc;
-  border-left: 5px solid var(--brand-blue);*/
   padding: 25px;
-  /*border-radius: 0 16px 16px 0;*/
   margin-bottom: 40px;
 }
 
@@ -280,7 +365,6 @@ h2:first-of-type { margin-top: 10px; }
   color: var(--text-main);
 }
 
-/* Secondary Tier: Contributors */
 .contributors-section-title {
   font-size: 1.2rem;
   font-weight: 700;
