@@ -26,7 +26,7 @@ body {
 
 .preamble {
   background: var(--card-bg);
-  max-width: 900px; 
+
   padding: 50px 40px; 
   border-radius: 24px; 
   box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.03), 0 10px 15px -3px rgba(15, 23, 42, 0.05);
