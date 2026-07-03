@@ -177,7 +177,7 @@ function applyEarnedState() {
     const state = plaque.querySelector('.state');
     const meta = plaque.querySelector('.meta');
     if (btn) btn.setAttribute('aria-pressed', earned ? 'true' : 'false');
-    if (state) state.textContent = earned ? 'Earned' : 'Locked';
+    if (state) state.textContent = earned ? 'Earned' : 'Earn it!';
     if (meta) meta.textContent = earned ? formatTime(earnedAt) : '—';
   });
   updateStats();
