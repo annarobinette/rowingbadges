@@ -64,6 +64,7 @@ body {
   display: flex;
   align-items: center;
   gap: 36px;
+  justify-content: space-between;
 }
 
 .brand {
@@ -81,8 +82,13 @@ body {
   display: flex;
   gap: 26px;
   overflow-x: auto;
-  flex: 1;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 28px 14px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
+.topnav::-webkit-scrollbar { display: none; }
 
 .topnav-link {
   font-family: var(--mono);
@@ -549,6 +555,25 @@ h2[id] { scroll-margin-top: 84px; }
   letter-spacing: 0.08em;
   text-transform: uppercase;
   margin-top: auto;
+}
+.earn-toggle {
+  appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.earn-toggle:focus-visible {
+  outline: 2px solid var(--copper);
+  outline-offset: 3px;
+  border-radius: 3px;
 }
 
 .plaque-status .dot {
