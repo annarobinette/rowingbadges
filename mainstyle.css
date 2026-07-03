@@ -540,6 +540,7 @@ h2[id] { scroll-margin-top: 84px; }
   line-height: 1.5;
   color: var(--mist);
   margin: 0 0 22px;
+  text-align: pretty;
   }
 
 .plaque:not(.earned) .plaque-desc { color: var(--mist-dim); }
