@@ -416,6 +416,11 @@ body {
   max-width: 420px;
 }
 
+.section-blurb {
+  max-width: 620px;   /* narrows the measure so lines wrap more evenly */
+  text-wrap: pretty;  /* nudges the browser to avoid a short ugly last line */
+}
+
 h2[id] { scroll-margin-top: 84px; }
 
 .plaques {
@@ -435,6 +440,7 @@ h2[id] { scroll-margin-top: 84px; }
   text-align: center;
   cursor: pointer;
   transition: transform 0.28s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.28s ease, background 0.28s ease;
+  display: flex; flex-direction: column;
 }
 
 .plaque:hover {
@@ -528,8 +534,7 @@ h2[id] { scroll-margin-top: 84px; }
   line-height: 1.5;
   color: var(--mist);
   margin: 0 0 22px;
-  min-height: 44px;
-}
+  }
 
 .plaque:not(.earned) .plaque-desc { color: var(--mist-dim); }
 
@@ -543,6 +548,7 @@ h2[id] { scroll-margin-top: 84px; }
   font-size: 0.7rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  margin-top: auto;
 }
 
 .plaque-status .dot {
