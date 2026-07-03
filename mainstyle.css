@@ -7,8 +7,8 @@
   --panel-2: #1a232d;
   --hairline: rgba(232, 238, 240, 0.09);
   --hairline-strong: rgba(232, 238, 240, 0.16);
-  --mist: #8a95a1;
-  --mist-dim: #5d6873;
+  --mist: #aeb5bd;
+  --mist-dim: #8a95a1;
   --paper: #edf1ef;
   --copper: #dd9257;
   --copper-deep: #a8632f;
@@ -82,6 +82,7 @@ body {
   display: flex;
   gap: 26px;
   overflow-x: auto;
+  justify-content: center; 
   max-width: 1180px;
   margin: 0 auto;
   padding: 0 28px 14px;
