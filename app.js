@@ -111,7 +111,7 @@ fetch(SHEET_URL)
           <p class="plaque-desc">${badge.description}</p>
           <div class="plaque-status">
             <button type="button" class="earn-toggle" aria-pressed="false">
-              <span class="dot"></span><span class="state">Locked</span>
+              <span class="dot"></span><span class="state">Earn it!</span>
             </button>
             <span class="meta">—</span>
           </div>
