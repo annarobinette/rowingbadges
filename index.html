@@ -3,53 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rowing Badge Book</title>
+  <title>Rowing Badge Log</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚣</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="mainstyle.css">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 </head>
 <body>
 
-  <div class="wrapper">
-  <section class="preamble">
-      <h1>Hello & Welcome</h1>
-      <p>Welcome to your rowing badge book! This website has everything you need to help you understand the badges you can achieve as a rower.</p>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <span class="brand">ROWING <span>//</span> BADGE LOG</span>
+      <nav class="topnav" id="topnav"></nav>
+      <div class="topbar-right">
+        <div class="person-switch">
+          <span class="person-label">Rowing as</span>
+          <select id="personSelect">
+            <option value="daniel">Daniel</option>
+            <option value="tara">Tara</option>
+            <option value="ashley">Ashley</option>
+            <option value="ryan">Ryan</option>
+            <option value="felix">Felix</option>
+            <option value="louise">Louise</option>
+            <option value="maria">Maria</option>
+            <option value="lottie">Lottie</option>
+            <option value="anna">Anna</option>
+          </select>
+        </div>
+        <span class="topbar-stat"><span id="topbarStatNum">0</span><span>/<span id="topbarStatTotal">0</span> earned</span></span>
+      </div>
+    </div>
+  </header>
+
+  <div class="page">
+    <section class="hero">
+      <canvas id="ripple" aria-hidden="true"></canvas>
+      <div class="hero-glow" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <p class="eyebrow">Est. Your First Stroke</p>
+        <h1 class="wordmark">Every Badge You've Bled For</h1>
+        <p class="hero-sub">Every 5am outing, blown seat and pier-jump you talked your way out of — logged, plaqued and lit up the morning you finally earn it.</p>
+        <a class="cta" href="#board">View Your Board ↓</a>
+      </div>
     </section>
 
-    <section class="sections-overview">
-      <h2>The Badge Guide</h2>
-      <p>When you start rowing, you are subsumed into a club that will teach you, train you, and destroy you. They become your best mates and your deepest rivals, and there is nothing like wearing your club colours. Explore the different sections below to track your milestones, technical masteries, social antics, and inevitable blunders.</p>
-      
-      <div id="section-nav" class="section-nav-grid"></div>
+    <section class="readout">
+      <div class="readout-figure">
+        <span class="readout-num" id="readoutNum">0</span><span class="readout-slash">/</span><span class="readout-total" id="readoutTotal">0</span>
+        <span class="readout-label">Badges earned</span>
+      </div>
+      <div class="stroke-meter" id="strokeMeter" aria-hidden="true"></div>
     </section>
 
-    <section class="motif-board-section">
+    <!-- <section class="motif-board-section">
       <h2>Your Virtual Badge Board</h2>
       <p>A dedicated layout board where you can visualize your physical patches, stichings, and collections pinned together in one place.</p>
       <div id="motif-container" class="motif-wrapper">
         <img src="images/motif.png" alt="Badge Board Motif" class="motif-image">
       </div>
-    </section>
-    
-    <!-- NEW AMENDMENT: Real-time search container bar component -->
+    </section> !-->
+
     <div class="search-container">
-      <input type="text" id="badge-search" placeholder="🔍 Search badges or keywords...">
+      <input type="text" id="badge-search" placeholder="Search badges or keywords…">
     </div>
 
-    <!-- Main Dynamic Badge Content Area -->
-    <div id="portfolio-container">
-      <div id="loading">Loading Badge Portfolio...</div>
-    </div>
+    <main class="board" id="board">
+      <div id="portfolio-container">
+        <div id="loading">Loading badge portfolio…</div>
+      </div>
+    </main>
 
-<section class="postamble">
+    <section class="postamble">
       <h2 class="postamble-title">The Creative Crew</h2>
-      
+
       <div class="lead-author">
         <h3>The Taskmaster</h3>
         <p>Who would I be without taking every opportunity to ruthlessly mock you? So proud you've found a new hobby and social group. You know this has been brewing for a while and I'm going to use my creativity for my ride-and-die cheerleader for good. This time. Because I love to make other people do my homework and I would be up the creek without my ...</p>
       </div>
 
-      <div class="contributors-section-title">Little Alex Hornes</div>
-      
+      <div class="contributors-section-title"><h3>Little Alex Hornes</h3></div>
+
       <div class="credits-grid">
         <div class="credit-block">
           <h4>You</h4>
@@ -65,8 +100,12 @@
         </div>
       </div>
     </section>
-  </div>
 
+    <footer class="colophon">
+      <span>Rowing Badge Log</span>
+      <span>Anna Robinette</span>
+    </footer>
+  </div>
 
   <script src="app.js"></script>
 </body>
