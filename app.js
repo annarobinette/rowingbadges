@@ -1,9 +1,8 @@
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/18-noRoTzvpO1QRw83WhwuOA7Ba-dEgd8Kw7y3bg7mZk/gviz/tq?tqx=out:json';
 
-const SUPABASE_URL = 'https://vlvhcguwcibctxlvxtna.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZsdmhjZ3V3Y2liY3R4bHZ4dG5hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwNjMxNDYsImV4cCI6MjA5ODYzOTE0Nn0.IuEXY1uEijw6eh8d2L4wfPKYnmFoAvqzPFOqfa2fGOo';
-
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Google Apps Script Web App URL (deployed from the same spreadsheet's
+// Extensions > Apps Script). Replace with your deployed /exec URL.
+const PROGRESS_API_URL = 'PASTE_YOUR_DEPLOYED_APPS_SCRIPT_WEB_APP_URL_HERE';
 
 const PERSON_KEY = 'rowingBadgeBook:person';
 
@@ -202,17 +201,16 @@ async function loadPerson(person) {
   earnedMap = new Map();
   applyEarnedState();
 
-  const { data, error } = await sb
-    .from('progress')
-    .select('badge_key, earned_at')
-    .eq('person', person);
-
-  if (error) {
-    console.error('Could not load progress from Supabase:', error);
+  try {
+    const res = await fetch(`${PROGRESS_API_URL}?person=${encodeURIComponent(person)}`);
+    if (!res.ok) throw new Error(`Progress API returned ${res.status}`);
+    const rows = await res.json();
+    earnedMap = new Map(rows.map(row => [row.badge, row.earnedAt]));
+  } catch (err) {
+    console.error('Could not load progress from the sheet:', err);
     return;
   }
 
-  earnedMap = new Map(data.map(row => [row.badge_key, row.earned_at]));
   applyEarnedState();
 }
 
@@ -247,21 +245,21 @@ function wireEarnToggles() {
         }
       }
 
-      let dbError;
-      if (nowEarned) {
-        ({ error: dbError } = await sb
-          .from('progress')
-          .upsert({ person, badge_key: id, earned: true, earned_at: new Date().toISOString() }));
-      } else {
-        ({ error: dbError } = await sb
-          .from('progress')
-          .delete()
-          .eq('person', person)
-          .eq('badge_key', id));
+      let saveError = null;
+      try {
+        const res = await fetch(PROGRESS_API_URL, {
+          method: 'POST',
+          // No explicit Content-Type: keeps this a CORS "simple request" so
+          // Apps Script Web Apps (which don't handle preflight) still work.
+          body: JSON.stringify({ person, badge: id, action: nowEarned ? 'earn' : 'unearn' })
+        });
+        if (!res.ok) throw new Error(`Progress API returned ${res.status}`);
+      } catch (err) {
+        saveError = err;
       }
 
-      if (dbError) {
-        console.error('Could not save progress to Supabase:', dbError);
+      if (saveError) {
+        console.error('Could not save progress to the sheet:', saveError);
       }
     });
   });
