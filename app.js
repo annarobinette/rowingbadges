@@ -168,7 +168,7 @@ function formatTime(iso) {
 
 function applyEarnedState() {
   document.querySelectorAll('.plaque').forEach(plaque => {
-    const id = plaque.getAttribute('data-badge');
+    const id = plaque.getAttribute('data-badge').toLowerCase();
     const earnedAt = earnedMap.get(id);
     const earned = !!earnedAt;
     plaque.classList.toggle('earned', earned);
@@ -225,7 +225,7 @@ async function loadPerson(person) {
     const res = await fetch(`${PROGRESS_API_URL}?person=${encodeURIComponent(person)}`);
     if (!res.ok) throw new Error(`Progress API returned ${res.status}`);
     const rows = await res.json();
-    earnedMap = new Map(rows.map(row => [row.badge, row.earnedAt]));
+    earnedMap = new Map(rows.map(row => [String(row.badge).toLowerCase(), row.earnedAt]));
   } catch (err) {
     console.error('Could not load progress from the sheet:', err);
     return;
@@ -245,7 +245,7 @@ function wireEarnToggles() {
     btn.addEventListener('click', async (e) => {
       e.stopPropagation();
       const plaque = btn.closest('.plaque');
-      const id = plaque.getAttribute('data-badge');
+      const id = plaque.getAttribute('data-badge').toLowerCase();
       const person = currentPerson();
       const nowEarned = !earnedMap.has(id);
 
