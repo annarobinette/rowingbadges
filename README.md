@@ -2,19 +2,21 @@
 
 A quick reference for how the site works and how to manage it day to day. Nothing here requires touching code unless stated.
 
-## The three moving parts
+## The moving parts
 
-The site is three things working together:
+The site is a few things working together, all anchored to one Google Sheet:
 
-1. **The Google Sheet** — the badge catalog. Every badge's name, description, image, and rarity flag lives here. This is the thing you'll edit most often.
-2. **Supabase** — a small free database that remembers who's earned what. When someone taps a badge, that gets saved here, not in the sheet.
-3. **The static site files** (`index.html`, `mainstyle.css`, `app.js`) — the actual webpage. These pull from the Sheet and Supabase live, every time someone loads the page. You only touch these for layout/style changes, not for adding badges or people.
+1. **The Sheet's badge catalog tab** — every badge's name, description, image, and rarity flag lives here. This is the thing you'll edit most often.
+2. **The Sheet's "Users" tab** — one name per row, feeds the "Rowing as" dropdown on the site.
+3. **The Sheet's "Progress" tab** — who's earned what. Managed automatically by the Apps Script below; you don't need to edit it by hand (though you can).
+4. **A Google Apps Script Web App** (`apps-script/Code.gs`), deployed from inside that same spreadsheet — a small API the site calls to read/write the Users and Progress tabs. This replaced Supabase, which kept auto-pausing from inactivity; Apps Script has no such limit.
+5. **The static site files** (`index.html`, `mainstyle.css`, `app.js`) — the actual webpage. You only touch these for layout/style changes, not for adding badges or people — those are both Sheet edits now.
 
-Because of that split: **adding a badge = edit the Sheet. Adding a person = edit `index.html`. Changing how it looks = edit `mainstyle.css`.**
+Because of that split: **adding a badge = edit the catalog tab. Adding a person = edit the Users tab. Changing how it looks = edit `mainstyle.css`.**
 
 ## Adding or editing a badge
 
-In the Google Sheet, each row is one badge, with columns:
+In the badge catalog tab, each row is one badge, with columns:
 
 | Column | Field | Notes |
 |---|---|---|
@@ -33,47 +35,48 @@ To add a badge: add a new row anywhere with these six columns filled in. It'll s
 
 ## Adding a person
 
-The list of names in the "Rowing as" switcher (top right of the site) is hardcoded in `index.html`. Find this block:
+Add a row to the **Users** tab — one name per row in column A (a header like "Name" in row 1 is fine). It shows up in the "Rowing as" dropdown next page load, no deployment or code change needed.
 
-```html
-<select id="personSelect">
-  <option value="daniel">Daniel</option>
-  <option value="tara">Tara</option>
-  ...
-</select>
-```
+Internally, each name is turned into a lowercase, no-spaces "slug" (e.g. "A.N. Other" → `a-n-other`) that's what actually gets saved against their progress — that's handled automatically, you only ever need to type the name as you want it displayed.
 
-Add a new line in the same pattern, e.g.:
-
-```html
-<option value="george">George</option>
-```
-
-The `value` is what actually gets saved to the database, so keep it lowercase with no spaces — it doesn't need to match the visible name exactly, but keeping them aligned avoids confusion. That's it: no Supabase setup needed per person, the database just starts saving rows for that name the first time they tick a badge.
+If the Apps Script is ever unreachable, the site falls back to a small hardcoded list in `index.html` so the dropdown isn't empty — that list only matters as a last resort and isn't where you should add people day to day.
 
 There's currently no password or login — anyone with the site link can pick any name from the dropdown and mark badges for them. Fine for a trusted crew; worth knowing.
 
 ## How earning works
 
-- Clicking a badge's status pill toggles it between **Earn it** and **Earned**, and saves immediately to Supabase against whoever's selected in "Rowing as."
+- Clicking a badge's status pill toggles it between **Earn it** and **Earned**, and saves immediately to the Progress tab against whoever's selected in "Rowing as."
 - Earning a normal badge fires a confetti burst; earning a `RARE!` badge fires a bigger, longer one.
-- On phones, badges show as icon + title only. Tapping one expands it to show the description and the Locked/Earned pill; tap again to collapse. This is just a display state — nothing is saved until the pill itself is tapped.
-- Switching "Rowing as" reloads that person's saved badges from Supabase — each person's progress is independent.
+- On phones, badges show as icon + title only. Tapping one expands it to show the description and the Earn it/Earned pill; tap again to collapse. This is just a display state — nothing is saved until the pill itself is tapped.
+- Switching "Rowing as" reloads that person's saved badges from the Progress tab — each person's progress is independent.
+
+## The Apps Script (`apps-script/Code.gs`)
+
+This is what turns the spreadsheet into something the site can read and write to. It's not part of the deployed website files — it lives inside the Google Sheet itself (Extensions → Apps Script).
+
+If you ever need to change it:
+
+1. Open the spreadsheet → Extensions → Apps Script.
+2. Replace the code with the updated version (ask for it as a file if copy/paste keeps mangling it — Apps Script's editor can be fussy about pasted formatting).
+3. **Deploy → Manage deployments → edit (pencil) → New version.** This keeps the same URL, so nothing else needs updating.
+4. If you ever create a genuinely *new* deployment instead of updating the existing one, the URL changes — you'll need to update `PROGRESS_API_URL` near the top of `app.js` to match.
 
 ## Where things live
 
 ```
-index.html      — page structure, the person list, hero copy
-mainstyle.css    — all visual styling (colors, layout, fonts)
-app.js           — fetches the Sheet + Supabase, renders badges, handles clicks
-images/          — badge artwork, section icons, the badge board photo
+index.html         — page structure, hero copy, fallback person list
+mainstyle.css       — all visual styling (colors, layout, fonts)
+app.js              — fetches the Sheet catalog + calls the Apps Script, renders badges, handles clicks
+apps-script/Code.gs — the Apps Script source (lives for real inside the Sheet, kept here for reference/version control)
+images/             — badge artwork, section icons, the badge board photo
 ```
 
-The Sheet and Supabase project are external — not in this repo. `app.js` has both connection details near the top (`SHEET_URL`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`).
+The spreadsheet itself is external — not in this repo. `app.js` has the connection details near the top (`SHEET_URL`, `PROGRESS_API_URL`).
 
 ## Troubleshooting
 
 - **Badges not showing at all / "Error loading badges"** — usually means the Google Sheet's sharing settings changed (it needs to be viewable by anyone with the link) or a row is malformed.
 - **A badge's image is broken** — the filename in Column E doesn't exactly match a file in `images/` (check spelling and the `.png`/`.jpg` extension).
 - **Someone's earned badges "disappeared"** — most likely a badge's title was changed without it having an explicit ID (see the ID section above).
-- **New badge/section not appearing** — the Sheet is fetched fresh on every page load, so a hard refresh (Cmd/Ctrl+Shift+R) usually fixes stale content.
+- **New badge/section/person not appearing** — the Sheet is fetched fresh on every page load, so a hard refresh (Cmd/Ctrl+Shift+R) usually fixes stale content.
+- **Earning a badge doesn't save, or `?mode=users` shows an error page instead of JSON** — the Apps Script deployment itself is the problem, not the site. Check: it's deployed with "Who has access: Anyone" (not "Anyone with Google account"), you actually clicked Deploy after changing that setting, and the URL in `app.js`'s `PROGRESS_API_URL` matches the current deployment's URL exactly.
