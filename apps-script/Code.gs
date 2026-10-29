@@ -68,6 +68,12 @@ function getUsers_() {
   return users;
 }
 
+function resolveDisplayName_(personValue) {
+  const users = getUsers_();
+  const match = users.find(u => u.value === personValue.toLowerCase());
+  return match ? match.name : personValue;
+}
+
 function jsonOutput_(obj) {
   return ContentService
     .createTextOutput(JSON.stringify(obj))
@@ -87,7 +93,7 @@ function doGet(e) {
 
   const result = [];
   for (let i = 1; i < data.length; i++) {
-    if (String(data[i][0]) === person) {
+    if (String(data[i][0]).toLowerCase() === person.toLowerCase()) {
       result.push({ badge: data[i][1], earnedAt: data[i][2] });
     }
   }
@@ -111,7 +117,7 @@ function doPost(e) {
 
   let rowIndex = -1;
   for (let i = 1; i < data.length; i++) {
-    if (String(data[i][0]) === person && String(data[i][1]) === badge) {
+    if (String(data[i][0]).toLowerCase() === person.toLowerCase() && String(data[i][1]).toLowerCase() === badge.toLowerCase()) {
       rowIndex = i + 1; // sheet rows are 1-indexed
       break;
     }
@@ -119,7 +125,8 @@ function doPost(e) {
 
   if (action === 'earn') {
     if (rowIndex === -1) {
-      sheet.appendRow([person, badge, new Date().toISOString()]);
+      const displayName = resolveDisplayName_(person);
+      sheet.appendRow([displayName, badge, new Date().toISOString()]);
     }
   } else if (action === 'unearn') {
     if (rowIndex !== -1) {
