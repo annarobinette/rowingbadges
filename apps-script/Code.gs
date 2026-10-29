@@ -15,25 +15,73 @@
   (columns: Person | Badge | EarnedAt) — you don't need to create it by hand,
   it's added automatically on first write.
 
+  Managing who can be picked in the "Rowing as" switcher: add a "Users" tab
+  to the spreadsheet with one name per row in column A (a header row in A1
+  is fine, e.g. "Name" - the script skips it since it isn't a real name match
+  needed, it just reads every non-empty cell as a name). Add/remove/rename
+  rows any time; the site re-reads the list on every page load.
+
   Redeploying: if you edit this script later, use Deploy > Manage deployments
   > edit (pencil) > New version, so the /exec URL stays the same and you
   don't have to update app.js again.
+
+  Note on testing from this editor: clicking "Run" on doGet/doPost here
+  calls them with no arguments, which is why you'd see an error reading
+  `e.parameter` or `e.postData` - that only happens from a manual Run, not
+  from a real request hitting the deployed URL. Use the deployed URL (or
+  Apps Script's "Test deployment" option) to actually test it.
 */
 
-const SHEET_NAME = 'Progress';
+const PROGRESS_SHEET_NAME = 'Progress';
+const USERS_SHEET_NAME = 'Users';
 
 function getProgressSheet_() {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName(SHEET_NAME);
+  let sheet = ss.getSheetByName(PROGRESS_SHEET_NAME);
   if (!sheet) {
-    sheet = ss.insertSheet(SHEET_NAME);
+    sheet = ss.insertSheet(PROGRESS_SHEET_NAME);
     sheet.appendRow(['Person', 'Badge', 'EarnedAt']);
   }
   return sheet;
 }
 
+function slugify_(str) {
+  return String(str)
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+}
+
+function getUsers_() {
+  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const sheet = ss.getSheetByName(USERS_SHEET_NAME);
+  if (!sheet) return [];
+
+  const data = sheet.getDataRange().getValues();
+  const users = [];
+  for (let i = 0; i < data.length; i++) {
+    const name = String(data[i][0] || '').trim();
+    if (!name || name.toLowerCase() === 'name') continue; // skip blanks + an optional header
+    users.push({ name: name, value: slugify_(name) });
+  }
+  return users;
+}
+
+function jsonOutput_(obj) {
+  return ContentService
+    .createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
 function doGet(e) {
-  const person = (e.parameter.person || '').trim();
+  const params = (e && e.parameter) || {};
+
+  if (params.mode === 'users') {
+    return jsonOutput_(getUsers_());
+  }
+
+  const person = String(params.person || '').trim();
   const sheet = getProgressSheet_();
   const data = sheet.getDataRange().getValues();
 
@@ -44,21 +92,18 @@ function doGet(e) {
     }
   }
 
-  return ContentService
-    .createTextOutput(JSON.stringify(result))
-    .setMimeType(ContentService.MimeType.JSON);
+  return jsonOutput_(result);
 }
 
 function doPost(e) {
-  const body = JSON.parse(e.postData.contents);
+  const raw = e && e.postData ? e.postData.contents : '{}';
+  const body = JSON.parse(raw || '{}');
   const person = String(body.person || '').trim();
   const badge = String(body.badge || '').trim();
   const action = body.action;
 
   if (!person || !badge) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ ok: false, error: 'person and badge are required' }))
-      .setMimeType(ContentService.MimeType.JSON);
+    return jsonOutput_({ ok: false, error: 'person and badge are required' });
   }
 
   const sheet = getProgressSheet_();
@@ -82,7 +127,5 @@ function doPost(e) {
     }
   }
 
-  return ContentService
-    .createTextOutput(JSON.stringify({ ok: true }))
-    .setMimeType(ContentService.MimeType.JSON);
+  return jsonOutput_({ ok: true });
 }

@@ -184,10 +184,30 @@ function applyEarnedState() {
 
 // ---- Person switching ----
 
-function wirePersonSwitch() {
+async function wirePersonSwitch() {
   const select = document.getElementById('personSelect');
+
+  try {
+    const res = await fetch(`${PROGRESS_API_URL}?mode=users`);
+    if (!res.ok) throw new Error(`Progress API returned ${res.status}`);
+    const users = await res.json();
+    if (users.length > 0) {
+      select.innerHTML = '';
+      users.forEach(u => {
+        const option = document.createElement('option');
+        option.value = u.value;
+        option.textContent = u.name;
+        select.appendChild(option);
+      });
+    }
+  } catch (err) {
+    console.error('Could not load the crew list, falling back to whatever is in the HTML:', err);
+  }
+
   const saved = localStorage.getItem(PERSON_KEY);
-  if (saved) select.value = saved;
+  if (saved && [...select.options].some(o => o.value === saved)) {
+    select.value = saved;
+  }
 
   loadPerson(select.value);
 
