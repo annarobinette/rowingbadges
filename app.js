@@ -2,7 +2,7 @@ const SHEET_URL = 'https://docs.google.com/spreadsheets/d/18-noRoTzvpO1QRw83Whwu
 
 // Google Apps Script Web App URL (deployed from the same spreadsheet's
 // Extensions > Apps Script). Replace with your deployed /exec URL.
-const PROGRESS_API_URL = 'https://script.google.com/macros/s/AKfycbzJYRRZZZ1TO9kC3RH_SdvnRdPfCMxdwLtMzbaoz15GlLJKQ-geQfk4BYCPE--9rZBA/exec';
+const PROGRESS_API_URL = 'https://script.google.com/macros/s/AKfycbx3RN2OWZW8o8RDU10qFD_ectTEmxqTwCCSA27hPTFs8F-poS0YQmJWlkPpVLL7rRsZ/exec';
 
 const PERSON_KEY = 'rowingBadgeBook:person';
 
