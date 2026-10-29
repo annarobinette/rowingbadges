@@ -91,14 +91,23 @@ function doGet(e) {
   const sheet = getProgressSheet_();
   const data = sheet.getDataRange().getValues();
 
-  const result = [];
+  // Keyed by lowercased badge, so if the same (person, badge) appears more
+  // than once (e.g. from a bulk-migrated dataset), only the most recent
+  // earnedAt is kept rather than just whichever row happens to be last.
+  const latestByBadge = {};
   for (let i = 1; i < data.length; i++) {
     if (String(data[i][0]).toLowerCase() === person.toLowerCase()) {
-      result.push({ badge: data[i][1], earnedAt: data[i][2] });
+      const badge = String(data[i][1]);
+      const earnedAt = data[i][2];
+      const key = badge.toLowerCase();
+      const existing = latestByBadge[key];
+      if (!existing || new Date(earnedAt) > new Date(existing.earnedAt)) {
+        latestByBadge[key] = { badge: badge, earnedAt: earnedAt };
+      }
     }
   }
 
-  return jsonOutput_(result);
+  return jsonOutput_(Object.keys(latestByBadge).map(k => latestByBadge[k]));
 }
 
 function doPost(e) {
@@ -115,22 +124,25 @@ function doPost(e) {
   const sheet = getProgressSheet_();
   const data = sheet.getDataRange().getValues();
 
-  let rowIndex = -1;
+  // Collect every matching row (not just the first) so duplicates - e.g.
+  // from a bulk-migrated dataset - get fully cleaned up rather than leaving
+  // stragglers behind.
+  const matchingRows = [];
   for (let i = 1; i < data.length; i++) {
     if (String(data[i][0]).toLowerCase() === person.toLowerCase() && String(data[i][1]).toLowerCase() === badge.toLowerCase()) {
-      rowIndex = i + 1; // sheet rows are 1-indexed
-      break;
+      matchingRows.push(i + 1); // sheet rows are 1-indexed
     }
   }
 
   if (action === 'earn') {
-    if (rowIndex === -1) {
+    if (matchingRows.length === 0) {
       const displayName = resolveDisplayName_(person);
       sheet.appendRow([displayName, badge, new Date().toISOString()]);
     }
   } else if (action === 'unearn') {
-    if (rowIndex !== -1) {
-      sheet.deleteRow(rowIndex);
+    // Delete bottom-to-top so earlier row numbers don't shift mid-loop.
+    for (let j = matchingRows.length - 1; j >= 0; j--) {
+      sheet.deleteRow(matchingRows[j]);
     }
   }
 
